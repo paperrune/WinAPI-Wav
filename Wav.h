@@ -3,10 +3,6 @@
 
 class Wav{
 private:
-	char *buffer8;
-	short *buffer16;
-	float *buffer32;
-
 	HWAVEIN hwavein;
 
 	HWAVEOUT hwaveout;
@@ -16,6 +12,10 @@ private:
 	WAVEHDR wavehdr;
 public:
 	bool recording;
+	
+	char *buffer8;
+	short *buffer16;
+	float *buffer32;
 
 	unsigned char *data;
 
