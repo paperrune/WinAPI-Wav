@@ -4,7 +4,6 @@
 
 int main(){
 	Wav wav("BalloonPop01.wav");
-
 	// wav.Load("BalloonPop01.wav");
 
 	printf("Play\n");
@@ -20,6 +19,8 @@ int main(){
 		int nSamplesPerSec;
 		int wBitsPerSample;
 
+		Wav wav("BalloonPop01.wav");
+
 		wav.Get_Properties(&nChannels, &nSamplesPerSec, &wBitsPerSample);
 		printf("\nnChannels: %d\nnSamplesPerSec: %d\nwBitsPerSample: %d\n", nChannels, nSamplesPerSec, wBitsPerSample);
 
@@ -30,12 +31,9 @@ int main(){
 		}
 
 		Wav new_wav(nChannels, nSamplesPerSec, wBitsPerSample);
-
 		// new_wav.Set_Properties(nChannels, nSamplesPerSec, wBitsPerSample);
 
 		new_wav.Create(data, length_data);
-		new_wav.WavToBuffer();
-		new_wav.Play();
 		new_wav.Save("BalloonPop02.wav");
 
 		delete[] data;
@@ -50,9 +48,12 @@ int main(){
 		int nSamplesPerSec;
 		int wBitsPerSample;
 
+		Wav wav("BalloonPop02.wav");
+
 		wav.Get_Properties(&nChannels, &nSamplesPerSec, &wBitsPerSample);
 		printf("\nnChannels: %d\nnSamplesPerSec: %d\nwBitsPerSample: %d\n", nChannels, nSamplesPerSec, wBitsPerSample);
 
+		wav.WavToBuffer();
 		buffer = new double[length_buffer = wav.length_buffer];
 
 		for (int i = 0; i < wav.length_buffer; i++){
@@ -64,7 +65,6 @@ int main(){
 		// new_wav.Set_Properties(nChannels, nSamplesPerSec, wBitsPerSample);
 
 		new_wav.Create(length_buffer, buffer);
-		new_wav.Play();
 		new_wav.BufferToWav();
 		new_wav.Save("BalloonPop03.wav");
 
