@@ -205,7 +205,7 @@ void Wav::Set_Properties(int nChannels, int nSamplesPerSec, int wBitsPerSample){
 	waveformatex.cbSize = 0;
 }
 void Wav::Play(){
-	Play(1000.0 * length_buffer / (waveformatex.nChannels * waveformatex.nSamplesPerSec));
+	Play((int)(1000.0 * length_buffer / (waveformatex.nChannels * waveformatex.nSamplesPerSec)));
 }
 void Wav::Play(int milliseconds){
 	switch (waveformatex.wBitsPerSample){
@@ -242,15 +242,15 @@ void Wav::Record(int milliseconds){
 	switch (waveformatex.wBitsPerSample){
 	case 8:
 		waveformatex.wFormatTag = WAVE_FORMAT_PCM;
-		wavehdr.lpData = (LPSTR)(buffer8 = (char*)realloc(buffer8, sizeof(char)* (length_buffer = waveformatex.nSamplesPerSec * milliseconds / 1000.0)));
+		wavehdr.lpData = (LPSTR)(buffer8 = (char*)realloc(buffer8, sizeof(char)* (length_buffer = (int)(waveformatex.nSamplesPerSec * milliseconds / 1000.0))));
 		break;
 	case 16:
 		waveformatex.wFormatTag = WAVE_FORMAT_PCM;
-		wavehdr.lpData = (LPSTR)(buffer16 = (short*)realloc(buffer16, sizeof(short)* (length_buffer = waveformatex.nSamplesPerSec * milliseconds / 1000.0)));
+		wavehdr.lpData = (LPSTR)(buffer16 = (short*)realloc(buffer16, sizeof(short)* (length_buffer = (int)(waveformatex.nSamplesPerSec * milliseconds / 1000.0))));
 		break;
 	case 32:
 		waveformatex.wFormatTag = 0x0003;
-		wavehdr.lpData = (LPSTR)(buffer32 = (float*)realloc(buffer32, sizeof(float)* (length_buffer = waveformatex.nSamplesPerSec * milliseconds / 1000.0)));
+		wavehdr.lpData = (LPSTR)(buffer32 = (float*)realloc(buffer32, sizeof(float)* (length_buffer = (int)(waveformatex.nSamplesPerSec * milliseconds / 1000.0))));
 		break;
 	default:
 		return;
@@ -280,4 +280,28 @@ void Wav::Record(int milliseconds){
 		return;
 	}
 	waveInClose(hwavein);
+}
+
+void Wav::Set_Buffer(int index, double value){
+	switch (waveformatex.wBitsPerSample){
+	case 8:
+		buffer8[index] = (char)(value * 127.5 - 0.5);
+	case 16:
+		buffer16[index] = (short)(value * 32767.5 - 0.5);
+	case 32:
+		buffer32[index] = (float)value;
+	}
+}
+double Wav::Get_Buffer(int index){
+	if (length_buffer <= index || index < 0) return 0;
+
+	switch (waveformatex.wBitsPerSample){
+	case 8:
+		return (buffer8[index] + 0.5) / 127.5;
+	case 16:
+		return (buffer16[index] + 0.5) / 32767.5;
+	case 32:
+		return buffer32[index];
+	}
+	return 0;
 }
