@@ -41,6 +41,36 @@ int main(){
 		delete[] data;
 	}
 
+	// create wav from buffer
+	{
+		double *buffer;
+
+		int length_buffer;
+		int nChannels;
+		int nSamplesPerSec;
+		int wBitsPerSample;
+
+		wav.Get_Properties(&nChannels, &nSamplesPerSec, &wBitsPerSample);
+		printf("\nnChannels: %d\nnSamplesPerSec: %d\nwBitsPerSample: %d\n", nChannels, nSamplesPerSec, wBitsPerSample);
+
+		buffer = new double[length_buffer = wav.length_buffer];
+
+		for (int i = 0; i < wav.length_buffer; i++){
+			buffer[i] = wav.Get_Buffer(i);
+		}
+
+		Wav new_wav(nChannels, nSamplesPerSec, wBitsPerSample);
+
+		// new_wav.Set_Properties(nChannels, nSamplesPerSec, wBitsPerSample);
+
+		new_wav.Create(length_buffer, buffer);
+		new_wav.Play();
+		new_wav.BufferToWav();
+		new_wav.Save("BalloonPop03.wav");
+
+		delete[] buffer;
+	}
+
 	printf("\nRecord\n");
 	wav.Record(2000);
 
