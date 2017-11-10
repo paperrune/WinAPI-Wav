@@ -148,7 +148,7 @@ void Wav::Load(char path[]){
 	if (chunk != 0x45564157){
 		fprintf(stderr, "[Load] [not WAVE]\n");
 	}
-
+	
 	// fmt 
 	fread(&chunk, 4, 1, file);
 	if (chunk != 0x20746d66){
@@ -166,6 +166,8 @@ void Wav::Load(char path[]){
 	if (chunk != 0x61746164){
 		fprintf(stderr, "[Load] [not data]\n");
 	}
+	while (chunk != 0x61746164 && fread(&chunk, 4, 1, file) != EOF);
+
 	fread(&length_wav, sizeof(int), 1, file);
 	data = (unsigned char*)realloc(data, length_wav);
 	fread(data, length_wav, 1, file);
